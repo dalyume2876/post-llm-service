@@ -1,0 +1,40 @@
+# =========================
+# Backend - Spring / Gradle
+# =========================
+backend/.gradle/
+backend/build/
+backend/out/
+
+# =========================
+# Frontend - React / Vite
+# =========================
+frontend/node_modules/
+frontend/dist/
+
+# =========================
+# AI Server - Python / uv
+# =========================
+ai-server/.venv/
+ai-server/__pycache__/
+ai-server/**/*.pyc
+
+# =========================
+# Environment / Secret
+# =========================
+.env
+.env.*
+**/.env
+**/.env.*
+
+# =========================
+# IDE / OS
+# =========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
