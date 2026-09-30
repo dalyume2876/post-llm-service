@@ -1,18 +1,16 @@
-package com.project.postllmservice.entity;
+package com.project.postllmservice.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor 
 @NoArgsConstructor 
+@AllArgsConstructor 
 @Data @Builder
-public class User {
+public class UserResponseDTO {
     private Long id;
     private String userId;
-    private String password;
     private String nickname;
     private String email;
-    private String profile;
 }
