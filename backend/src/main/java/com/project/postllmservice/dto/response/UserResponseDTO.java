@@ -1,5 +1,7 @@
 package com.project.postllmservice.dto.response;
 
+import com.project.postllmservice.entity.User;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,4 +15,15 @@ public class UserResponseDTO {
     private String userId;
     private String nickname;
     private String email;
+    private String profile;
+
+    public static UserResponseDTO from(User user) {
+        return UserResponseDTO.builder()
+        .id(user.getId())
+        .userId(user.getUserId())
+        .nickname(user.getNickname())
+        .email(user.getEmail())
+        .profile(user.getProfile())
+        .build();
+    }
 }

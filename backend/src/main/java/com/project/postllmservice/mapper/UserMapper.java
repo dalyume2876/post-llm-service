@@ -11,4 +11,6 @@ public interface UserMapper {
     int addUser(User user);
     Optional<User> findById(Long id);
     Optional<User> findByEmail(String email);
+    int updateUser(User user);
+    int deleteUser(Long id);
 }

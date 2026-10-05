@@ -26,7 +26,8 @@
             id,
             user_id,
             nickname,
-            email
+            email,
+            profile
         from user
         where id = #{id};
     </select>
@@ -40,5 +41,19 @@
         from user
         where email = #{email};
     </select>
+
+    <update id="updateUser">
+        update user
+        set 
+            nickname = #{nickname},
+            email = #{email}, 
+            profile = #{profile}
+        where id = #{id};
+    </update>
+
+    <delete id="deleteUser">
+        delete from user
+        where id = #{id};
+    </delete>
 
 </mapper>
