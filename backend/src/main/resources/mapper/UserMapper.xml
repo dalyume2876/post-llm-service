@@ -45,9 +45,9 @@
     <update id="updateUser">
         update user
         set 
-            nickname = #{nickname},
-            email = #{email}, 
-            profile = #{profile}
+            nickname = #{request.nickname},
+            email = #{request.email}, 
+            profile = #{request.profile}
         where id = #{id};
     </update>
 

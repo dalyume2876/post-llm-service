@@ -4,6 +4,50 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace = "com.project.postllmservice.mapper.PostMapper">
+    <resultMap id="postDetailResponseResultMap" type="com.project.postllmservice.dto.response.PostDetailResponseDTO">
+        <result property="postName" column="post_name"/>
+        <result property="postContent" column="post_content"/>
+        <result property="userId" column="user_id"/>
+        <result property="uploadedAt" column="uploaded_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="nickname" column="nickname"/>
+        <result property="profile" column="profile"/>
+    </resultMap>
+
+    <resultMap id="postListResponseResultMap" type="com.project.postllmservice.dto.response.PostListResponseDTO">
+        <result property="postName" column="post_name"/>
+        <result property="postContent" column="post_content"/>
+        <result property="uploadedAt" column="uploaded_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
+    <select id="findDetailById" resultMap="postDetailResponseResultMap">
+        SELECT 
+            p.post_name, 
+            p.post_content, 
+            p.user_id, 
+            p.uploaded_at,
+            p.updated_at,
+            u.nickname, 
+            u.profile
+        FROM post p
+        LEFT JOIN user u ON p.user_id = u.id
+        WHERE p.id = #{id}
+    </select>
+    
+    <select id="findAllPosts" resultMap="postListResponseResultMap">
+        select
+            p.post_name,
+            p.post_content,
+            p.uploaded_at,
+            p.updated_at,
+            u.nickname
+        from post p
+        left join user u
+        on p.user_id = u.id;
+    </select>
+
     <insert id="addPost">
         INSERT INTO post (
             post_name,
@@ -16,4 +60,17 @@
             #{userId}
         )
     </insert>
+
+    <update id="updatePost">
+        UPDATE post
+        SET
+            post_name = #{request.postName},
+            post_content = #{request.postContent},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deletePost">
+        delete from post where id = #{id};
+    </delete>
 </mapper>

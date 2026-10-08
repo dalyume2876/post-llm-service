@@ -1,5 +1,7 @@
 package com.project.postllmservice.dto.request;
 
+import com.project.postllmservice.entity.Post;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,4 +18,12 @@ public class CreatePostRequestDTO {
     @Size(max = 50) 
     private String postName;
     private String postContent;
+    
+    public Post toEntity(Long userId) {
+        return Post.builder()
+            .postName(postName)
+            .postContent(postContent)
+            .userId(userId)
+            .build();
+    }
 }
