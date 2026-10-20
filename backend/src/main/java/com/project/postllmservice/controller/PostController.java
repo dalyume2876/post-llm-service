@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.postllmservice.common.response.ApiResponse;
 import com.project.postllmservice.dto.request.CreatePostRequestDTO;
 import com.project.postllmservice.dto.request.UpdatePostRequestDTO;
 import com.project.postllmservice.dto.response.PostDetailResponseDTO;
@@ -22,36 +22,58 @@ import com.project.postllmservice.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RestController 
-@RequiredArgsConstructor 
-@RequestMapping("/post")
+@RestController
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDetailResponseDTO> detailPost(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(postService.detailPost(id));
+
+    @GetMapping("/test-error")
+    public void testError() {
+        throw new RuntimeException("테스트용 서버 오류");
     }
 
-    @GetMapping({"/", "/list"})
-    public ResponseEntity<List<PostListResponseDTO>> findAllPosts() {
-        return ResponseEntity.ok(postService.findAllPosts());
+    @GetMapping("post/{id}")
+    public ResponseEntity<ApiResponse<PostDetailResponseDTO>> detailPost(@PathVariable("id") Long id) {
+
+        PostDetailResponseDTO post = postService.detailPost(id);
+
+        ApiResponse<PostDetailResponseDTO> response = new ApiResponse<PostDetailResponseDTO>(true, "게시글 조회 성공", post);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping({ "/", "post/list" })
+    public ResponseEntity<ApiResponse<List<PostListResponseDTO>>> findAllPosts() {
+
+        List<PostListResponseDTO> post = postService.findAllPosts();
+        ApiResponse<List<PostListResponseDTO>> response = new ApiResponse<List<PostListResponseDTO>>(true, "게시글 조회 성공",
+                post);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPost(@RequestBody CreatePostRequestDTO reqDTO) {
+    public ResponseEntity<ApiResponse<Void>> addPost(@Valid @RequestBody CreatePostRequestDTO reqDTO) {
         postService.addPost(reqDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("생성 완료");
+
+        ApiResponse<Void> response = new ApiResponse<>(true, "생성 완료", null);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PostDetailResponseDTO> updatePost(@PathVariable Long id, @RequestBody @Valid UpdatePostRequestDTO reqDTO) {
-        return ResponseEntity.ok(postService.updatePost(id, reqDTO));
+    @PutMapping("post/{id}")
+    public ResponseEntity<ApiResponse<PostDetailResponseDTO>> updatePost(@PathVariable Long id,
+            @RequestBody @Valid UpdatePostRequestDTO reqDTO) {
+        PostDetailResponseDTO post = postService.updatePost(id, reqDTO);
+
+        ApiResponse<PostDetailResponseDTO> response = new ApiResponse<PostDetailResponseDTO>(true, "게시글 수정 완료", post);
+
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
+    @DeleteMapping("post/{id}")
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.status(HttpStatus.OK).body("삭제 완료");
+        return ResponseEntity.noContent().build();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.postllmservice.common.response.ApiResponse;
 import com.project.postllmservice.dto.request.RegisterUserRequestDTO;
 import com.project.postllmservice.dto.request.UpdateUserInfoRequestDTO;
 import com.project.postllmservice.dto.response.UserResponseDTO;
@@ -22,31 +23,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController 
-@RequiredArgsConstructor 
-@RequestMapping("/user")
+@RequiredArgsConstructor
 @Slf4j 
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<ApiResponse<UserResponseDTO>> getUserById(@PathVariable Long id) {
+
+        UserResponseDTO user = userService.getUserById(id);
+
+        ApiResponse<UserResponseDTO> response = new ApiResponse<UserResponseDTO>(true, "조회 성공", user);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@RequestBody @Valid RegisterUserRequestDTO dto) {   
+    public ResponseEntity<ApiResponse<Void>> signUp(@RequestBody @Valid RegisterUserRequestDTO dto) {   
         userService.addUser(dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 완료");
+        ApiResponse<Void> response = new ApiResponse<>(true, "회원가입 성공", null);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<UserResponseDTO> updateUser(
+    public ResponseEntity<ApiResponse<UserResponseDTO>> updateUser(
         @RequestParam("id") Long id,
         @RequestBody @Valid UpdateUserInfoRequestDTO request
     ) {
-        return ResponseEntity.ok(userService.updateUser(id, request));
+        UserResponseDTO userResponseDTO = userService.updateUser(id, request);
+        ApiResponse<UserResponseDTO> response = new ApiResponse<UserResponseDTO>(true, "프로필 조회 성공", userResponseDTO);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")

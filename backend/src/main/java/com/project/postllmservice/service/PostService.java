@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.project.postllmservice.common.exception.BusinessException;
+import com.project.postllmservice.common.exception.ErrorCode;
 import com.project.postllmservice.dto.request.CreatePostRequestDTO;
 import com.project.postllmservice.dto.request.UpdatePostRequestDTO;
 import com.project.postllmservice.dto.response.PostDetailResponseDTO;
@@ -26,8 +28,7 @@ public class PostService {
 
     public PostDetailResponseDTO detailPost(Long id) {
         return postMapper.findDetailById(id)
-            .orElseThrow(() -> new ResponseStatusException( //todo global exception 만들기
-                HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+            .orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
     }
 
     public List<PostListResponseDTO> findAllPosts() {
@@ -43,7 +44,7 @@ public class PostService {
         int rows = postMapper.addPost(post);
 
         if(rows <= 0) {
-            throw new IllegalStateException("게시글 등록에 실패했습니다.");
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -52,7 +53,7 @@ public class PostService {
         int rows = postMapper.updatePost(id, request);
 
         if (rows <= 0) {
-            throw new IllegalStateException("게시글 수정에 실패했습니다.");
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
         return detailPost(id);
@@ -64,7 +65,7 @@ public class PostService {
         int rows = postMapper.deletePost(id);
 
         if (rows == 0) {
-            throw new IllegalStateException("존재하지않는 게시글입니다.");
+            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
         }
     }
 

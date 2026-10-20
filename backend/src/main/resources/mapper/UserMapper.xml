@@ -37,7 +37,8 @@
             id,
             user_id,
             nickname,
-            email
+            email,
+            profile
         from user
         where email = #{email};
     </select>
